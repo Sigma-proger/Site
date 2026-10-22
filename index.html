@@ -3,16 +3,31 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<!-- SEO мета-теги-->
 	<title>Satisfactory - Огляд кращого симулятора фабрик</title>
+	<meta name="description" content="Огляд відеогри Satisfactory: будівництво автоматизованих фабрик, дослідження планет, оптимізація конвеєрних ліній та корисні поради для новачків.">
+	<meta name="keywords" content="Satisfactory, симулятор фабрики, Coffee Stain Studios, автоматизація, конвеєри, будівництво, ігри">
+	<meta name="author" content="Ваше Прізвище та Ім'я">
+
+	<!-- Open Graph мета-теги -->
+	<meta property="og:title" content="Satisfactory - Огляд кращого симулятора фабрик">
+	<meta property="og:description" content="Дізнайтеся все про побудову мегазаводів та автоматизацію у грі Satisfactory.">
+	<meta property="og:image" content="https://cdn.iphones.ru/wp-content/uploads/2024/10/satisfactory-side-angle-shot-of-a-factory-1024x576.jpg">
+	<meta property="og:type" content="website">
+
+	<!-- Favicon -->
+	<link rel="icon" href="https://satisfactory.wiki.gg/images/4/41/Site-favicon.ico" type="image/x-icon">
+
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-	<!-- Крок 1 та 2: Хедер-меню з Flexbox -->
+	<!-- Хедер та навігація -->
 	<header class="site-header">
 		<div class="header-container">
 			<div class="logo">Satisfactory<span>Wiki</span></div>
-			<nav class="main-nav">
+			<nav class="main-nav" aria-label="Головне меню сайту">
 				<ul>
 					<li><a href="#about">Про тему</a></li>
 					<li><a href="#features">Особливості</a></li>
@@ -24,12 +39,14 @@
 		</div>
 	</header>
 
-	<main>
+	<!-- Головний стрижневий контейнер -->
+	<main id="main-content">
+		
 		<!-- Секція 1: Про тему -->
 		<section id="about" class="section">
 			<h1>Огляд гри Satisfactory: Від будівництва першого конвеєра до мегазаводів</h1>
 			
-			<img class="main-img" src="https://cdn.iphones.ru/wp-content/uploads/2024/10/satisfactory-side-angle-shot-of-a-factory-1024x576.jpg" alt="Промисловий завод та автоматизовані лінії у Satisfactory">
+			<img class="main-img" src="https://cdn.iphones.ru/wp-content/uploads/2024/10/satisfactory-side-angle-shot-of-a-factory-1024x576.jpg" alt="Промисловий завод та автоматизовані лінії у грі Satisfactory під кутом">
 
 			<h2>Що таке Satisfactory?</h2>
 			<p class="intro">
@@ -39,43 +56,50 @@
 				Гра поєднує в собі елементи автоматизації, досліджень та виживання. Вам доведеться битися з місцевими хижаками, шукати рідкісні корисні копалини та <em>ретельно розраховувати баланс</em> виробничих ліній, щоб уникнути заторів на конвеєрах.
 			</p>
 			<p>
-				Детальнішу інформацію про гру можна знайти на <a href="https://www.satisfactorygame.com/" target="_blank">офіційному сайті Satisfactory</a> або переглянути <a href="https://www.youtube.com/watch?v=aoHCYhlYjlc" target="_blank">трейлер на YouTube</a>.
+				Детальнішу інформацію про гру можна знайти на <a href="https://www.satisfactorygame.com/" target="_blank" rel="noopener">офіційному Satisfactory Wiki</a> або переглянути <a href="https://www.youtube.com/watch?v=aoHCYhlYjlc" target="_blank" rel="noopener">трейлер на YouTube</a>.
 			</p>
 		</section>
 
-		<!-- Секція 2: Особливості -->
+		<!-- Довідковий блок Aside -->
 		<section id="features" class="section section-alt">
 			<h2>Ключові особливості гри</h2>
-			<ul class="features-list">
-				<li>Повний огляд від першої особи та масштабне будівництво у 3D-просторі.</li>
-				<li>Великий відкритий світ площею 30 км² з унікальними біомами.</li>
-				<li>Можливість грати як у подекуди складній одиночній грі, так і в кооперативі з друзями.</li>
-				<li>Широкий вибір транспорту: від позашляховиків до електропоїздів та гіпертруб.</li>
-			</ul>
-		</section>
+			<div class="features-wrapper">
+				<ul class="features-list">
+					<li>Повний огляд від першої особи та масштабне будівництво у 3D-просторі.</li>
+					<li>Великий відкритий світ площею 30 км² з унікальними біомами.</li>
+					<li>Можливість грати як у подекуди складній одиночній грі, так і в кооперативі з друзями.</li>
+					<li>Широкий вибір транспорту: від позашляховиків до електропоїздів та гіпертруб.</li>
+				</ul>
 
-		<!-- Секція 3: Поради та бейдж (Крок 4) -->
-		<section id="tips" class="section">
-			<h2>Топ-3 поради для новачків</h2>
-			<div class="cards-container">
-				<div class="card card-featured">
-					<!-- Крок 4.3: Локальне позиціонування бейджа (relative + absolute) -->
-					<span class="badge">ХІТ ПОРАДА</span>
-					<h3>1. Вільний простір</h3>
-					<p>Завжди залишайте вільне місце навколо своїх фабрик для майбутнього розширення.</p>
-				</div>
-				<div class="card">
-					<h3>2. Фундамент</h3>
-					<p>Використовуйте фундаментальні плити для вирівнювання території - це значно полегшить розміщення конвеєрів.</p>
-				</div>
-				<div class="card">
-					<h3>3. Біопаливо</h3>
-					<p>Автоматизуйте виробництво біопалива якомога раніше, щоб не витрачати весь час на збір рослин вручну.</p>
-				</div>
+				<!-- Довідковий блок <aside> -->
+				<aside class="info-aside">
+					<h3>Цікавий факт</h3>
+					<p>Планета MASSAGE-2(AB)b є повністю створеною вручну розробниками, а не згенерованою процедурно! Всі ресурси та секрети мають фіксоване розташування.</p>
+				</aside>
 			</div>
 		</section>
 
-		<!-- Секція 4: Характеристики / Системні вимоги -->
+		<!-- Поради та автономні статті <article> -->
+		<section id="tips" class="section">
+			<h2>Топ-3 поради для новачків</h2>
+			<div class="cards-container">
+				<article class="card card-featured">
+					<span class="badge">ХІТ ПОРАДА</span>
+					<h3>1. Вільний простір</h3>
+					<p>Завжди залишайте вільне місце навколо своїх фабрик для майбутнього розширення.</p>
+				</article>
+				<article class="card">
+					<h3>2. Фундамент</h3>
+					<p>Використовуйте фундаментальні плити для вирівнювання території - це значно полегшить розміщення конвеєрів.</p>
+				</article>
+				<article class="card">
+					<h3>3. Біопаливо</h3>
+					<p>Автоматизуйте виробництво біопалива якомога раніше, щоб не витрачати весь час на збір рослин вручну.</p>
+				</article>
+			</div>
+		</section>
+
+		<!-- Характеристики -->
 		<section id="specs" class="section section-alt">
 			<h2>Системні вимоги (ПК)</h2>
 			<div class="table-wrapper">
@@ -113,25 +137,34 @@
 			</div>
 		</section>
 
-		<!-- Секція 5: Галерея на CSS Grid (Крок 3) -->
+		<!-- Галерея -->
 		<section id="gallery" class="section">
-			<h2>Картинки, що описують гру</h2>
+			<h2>Галерея скріншотів гри</h2>
 			<div class="grid-gallery">
 				<div class="gallery-item">
-					<img src="https://ixbt.online/live/images/original/32/37/33/2024/09/11/a2e2cb56f4.jpg" alt="Мегабаза у Satisfactory">
+					<img src="https://ixbt.online/live/images/original/32/37/33/2024/09/11/a2e2cb56f4.jpg" alt="Масштабна багаторівнева мегабаза у Satisfactory">
 				</div>
 				<div class="gallery-item">
-					<img src="https://imgs.sector.sk/files/novinky/0/2019/4-27-11-26-25//satisfactory-187565-2931787.jpg" alt="Завод на турбопаливі">
+					<img src="https://imgs.sector.sk/files/novinky/0/2019/4-27-11-26-25//satisfactory-187565-2931787.jpg" alt="Автоматизований завод з переробки турбопалива">
 				</div>
 				<div class="gallery-item">
-					<img src="https://satisfactory.wiki.gg/images/thumb/Map_Roads.png/320px-Map_Roads.png?5773cd" alt="Карта доріг у грі Satisfactory">
+					<img src="https://satisfactory.wiki.gg/images/thumb/Map_Roads.png/320px-Map_Roads.png?5773cd" alt="Схема доріг та маршрутів транспорту на карті">
 				</div>
 			</div>
 		</section>
+
 	</main>
 
-	<!-- Крок 5: Плаваюча кнопка повернення -->
-	<a href="#about" class="scroll-top-btn" title="Нагору">↑</a>
+	<!-- Підвал сайту <footer> -->
+	<footer class="site-footer">
+		<div class="footer-container">
+			<p>&copy; 2026 Навчальний проєкт. Дисципліна: <strong>Основи web-розробки</strong>.</p>
+			<p>Розробник: <strong>Олександр Король</strong>  | Практична робота №5 | +380 73 327 4380</p>
+		</div>
+	</footer>
+
+	<!-- Плаваюча кнопка переходу нагору -->
+	<a href="#main-content" class="scroll-top-btn" title="Нагору" aria-label="Повернутися на початок сторінки">↑</a>
 
 </body>
 </html>
