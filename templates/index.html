@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SatisForum</title>
+</head>
+
+<body>
+	<header class="site-header">
+		<div class="container">
+			<a href="/" class="logo">Логотип</a>
+			<nav class="menu">
+				<a href="#about">Про нас</a>
+				<a href="#services">Послуги</a>
+				<a href="#contacts">Контакти</a>
+				<a href="">Увійти</a>
+				<a href="">Реєстрація</a>
+				<!--ТУТ АКАУНТ логотип-->				
+			</nav>
+		</div>
+	</header>
+
+	<div id="topics">
+
+	</div>
+
+	<header class="site-header">
+		<div>
+			<div class="">
+
+				<div class="logo">
+					<a href="#" onclick="showTopicsView()" class="">
+
+						<canvas id="logoCanvas" width="140" height="32"></canvas>
+
+						<script>
+							const canvas = document.getElementById('logoCanvas');
+							const ctx = canvas.getContext('2d');
+
+							// Використовуємо 24px за вимогами
+							ctx.font = 'bold 24px Inter, sans-serif';
+							ctx.textBaseline = 'middle';
+
+							const firstPart = "Satis";
+							const secondPart = "Forum";
+
+							// Відступ зліва (margin 8px)
+							const startX = 8;
+							const centerY = canvas.height / 2; // Точно по центру Canvas (16px)
+
+							// 1. Малюємо "Satis" (колір #4F46E5)
+							ctx.fillStyle = '#FA9549';
+							ctx.fillText(firstPart, startX, centerY);
+
+							// 2. Дрібний розрахунок ширини першої частини
+							const firstPartWidth = ctx.measureText(firstPart).width;
+
+							// 3. Малюємо "Forum" одразу після "Satis"
+							ctx.fillStyle = '#1B2234';
+							ctx.fillText(secondPart, startX + firstPartWidth, centerY);
+						</script>
+					</a>
+				</div>
+
+				<!-- Навігація -->
+				<!--
+				<nav class="">
+					<a href="#about" onclick="openModal('aboutModal')" class="hover:text-brand-600 transition">Про нас</a>
+					<a href="#services" onclick="openModal('servicesModal')" class="hover:text-brand-600 transition">Послуги</a>
+					<a href="#contacts" onclick="openModal('contactsModal')" class="hover:text-brand-600 transition">Контакти</a>
+				</nav>-->
+
+				<!-- Акаунтно-авторизаційний блок -->
+				<div class="">
+					<!-- Заповнюється динамічно через JS -->
+				</div>
+			</div>
+		</div>
+	</header>
+</body>
+</html>

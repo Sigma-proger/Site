@@ -1,0 +1,24 @@
+<canvas id="logoCanvas" width="400" height="100"></canvas>
+
+<script>
+	const canvas = document.getElementById('logoCanvas');
+	const ctx = canvas.getContext('2d');
+
+	// Налаштування шрифту
+	ctx.font = 'bold 48px Inter, sans-serif';
+	ctx.textBaseline = 'middle';
+
+	const firstPart = "Satis";
+	const secondPart = "Forum";
+
+	// Малюємо першу частину
+	ctx.fillStyle = '#FA9549';
+	ctx.fillText(firstPart, 20, 50);
+
+	// Вимірюємо ширину першої частини, щоб друга почалася одразу за нею
+	const firstPartWidth = ctx.measureText(firstPart).width;
+
+	// Малюємо другу частину
+	ctx.fillStyle = '#1B2234';
+	ctx.fillText(secondPart, 20 + firstPartWidth, 50);
+</script>
