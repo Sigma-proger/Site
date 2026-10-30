@@ -1,0 +1,74 @@
+body {
+	font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+	background-color: #1a1c23;
+	color: #e0e6ed;
+	line-height: 1.6;
+	margin: 0;
+	padding: 20px 40px;
+	margin-left: auto;
+	margin-right: auto;
+}
+/* Оформлення заголовків */
+h1 {
+	color: #fa9549;
+	border-bottom: 2px solid #fa9549;
+	padding-bottom: 10px;
+	font-size: 2.2rem;
+}
+
+h2 {
+	color: #4da6ff;
+	margin-top: 30px;
+	border-left: 4px solid #4da6ff;
+	padding-left: 10px;
+}
+
+h3 {
+	color: #ffc107;
+	margin-top: 25px;
+}
+
+.intro {
+	font-family: "Noto Serif DoubleStruck";
+}
+
+th, td {
+	padding: 12px 15px;
+	text-align: left;
+}
+
+th {
+	background-color: #2c313e;
+	color: #fa9549;
+}
+a {
+	color: #4da6ff;
+	text-decoration: none;
+}
+
+em {
+	color: #ffc107;
+	font-style: normal;
+	border-bottom: 1px dashed #ffc107;
+}
+
+
+strong {
+	color: #ffffff;
+}
+
+/* Списки */
+ul, ol {
+	background-color: #242832;
+	padding: 20px 20px 20px 40px;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.gallery img {
+	width: calc(33.333% - 10px);
+	height: 340px;
+	object-fit: cover;
+	border-radius: 8px;
+	box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}

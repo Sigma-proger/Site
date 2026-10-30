@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SatisForum - Сучасний український форум</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            padding-top: 70px;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        }
+
+        .modal-backdrop {
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col">
+
+    <!-- Хедер відповідно до заготовки -->
+    <header class="site-header border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Логотип -->
+                <div class="flex items-center space-x-3">
+                    <a href="#" onclick="showTopicsView()" class="flex items-center space-x-2 text-2xl font-bold text-brand-600 tracking-tight">
+                        <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-brand-500/30">
+                            <i class="fa-solid font-bold text-xl">S</i>
+                        </div>
+                        <span>Satis<span class="text-slate-800">Forum</span></span>
+                    </a>
+                </div>
+
+                <!-- Навігація -->
+                <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600">
+                    <a href="#about" onclick="openModal('aboutModal')" class="hover:text-brand-600 transition">Про нас</a>
+                    <a href="#services" onclick="openModal('servicesModal')" class="hover:text-brand-600 transition">Послуги</a>
+                    <a href="#contacts" onclick="openModal('contactsModal')" class="hover:text-brand-600 transition">Контакти</a>
+                </nav>
+
+                <!-- Акаунтно-авторизаційний блок -->
+                <div class="flex items-center space-x-3" id="authSection">
+                    <!-- Заповнюється динамічно через JS -->
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        
+        <!-- ДИТАЛЬНИЙ ПЕРЕГЛЯД ТЕМИ (Прихований за замовчуванням) -->
+        <div id="topicDetailView" class="hidden mb-8">
+            <button onclick="showTopicsView()" class="mb-4 inline-flex items-center text-sm font-medium text-brand-600 hover:text-brand-700">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Назад до списку тем
+            </button>
+
+            <div id="topicDetailContainer">
+                <!-- Картка теми завантажується тут -->
+            </div>
+
+            <!-- Секція коментарів -->
+            <div class="mt-8 bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+                <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center">
+                    <i class="fa-solid fa-comments text-brand-600 mr-3"></i>
+                    Коментарі (<span id="commentsCount">0</span>)
+                </h3>
+
+                <!-- Форма створення коментаря -->
+                <div class="mb-8" id="addCommentBox">
+                    <!-- Наповнюється JS (якщо авторизований) -->
+                </div>
+
+                <!-- Список коментарів -->
+                <div id="commentsList" class="space-y-4">
+                    <!-- Коментарі завантажуються JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ОСНОВНИЙ СПИСОК ТЕМ ТА БОКОВА ПАНЕЛЬ -->
+        <div id="mainForumView" class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            
+            <!-- Бокова панель (Sidebar) -->
+            <aside class="lg:col-span-1 space-y-6">
+                <!-- Кнопка створення теми -->
+                <button onclick="handleCreateTopicClick()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-brand-500/25 transition duration-200 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-circle-plus text-lg"></i>
+                    <span>Створити тему</span>
+                </button>
+
+                <!-- Категорії -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Категорії</h2>
+                    <ul class="space-y-1" id="categoriesList">
+                        <li>
+                            <button onclick="filterByCategory('all')" class="category-btn active w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition text-brand-600 bg-brand-50">
+                                <span class="flex items-center"><i class="fa-solid fa-globe w-6 text-center mr-2"></i> Усі теми</span>
+                                <span class="text-xs bg-white px-2 py-0.5 rounded-full border border-slate-200 font-semibold" id="catCountAll">0</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="filterByCategory('Загальне')" class="category-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-600 hover:bg-slate-50">
+                                <span class="flex items-center"><i class="fa-solid fa-comments w-6 text-center mr-2 text-emerald-500"></i> Загальне</span>
+                                <span class="text-xs bg-slate-100 px-2 py-0.5 rounded-full font-semibold" id="catCountGeneral">0</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="filterByCategory('Технології')" class="category-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-600 hover:bg-slate-50">
+                                <span class="flex items-center"><i class="fa-solid fa-laptop-code w-6 text-center mr-2 text-blue-500"></i> Технології</span>
+                                <span class="text-xs bg-slate-100 px-2 py-0.5 rounded-full font-semibold" id="catCountTech">0</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="filterByCategory('Ігри')" class="category-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-600 hover:bg-slate-50">
+                                <span class="flex items-center"><i class="fa-solid fa-gamepad w-6 text-center mr-2 text-purple-500"></i> Ігри</span>
+                                <span class="text-xs bg-slate-100 px-2 py-0.5 rounded-full font-semibold" id="catCountGames">0</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="filterByCategory('Запитання та Відповіді')" class="category-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition text-slate-600 hover:bg-slate-50">
+                                <span class="flex items-center"><i class="fa-solid fa-circle-question w-6 text-center mr-2 text-amber-500"></i> Запитання</span>
+                                <span class="text-xs bg-slate-100 px-2 py-0.5 rounded-full font-semibold" id="catCountQA">0</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Статистика спільноти -->
+                <div class="bg-gradient-to-br from-brand-900 to-indigo-900 text-white rounded-2xl p-5 shadow-sm">
+                    <h3 class="font-semibold text-sm text-indigo-200 mb-3 uppercase tracking-wider">Статистика спільноти</h3>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
+                            <div class="text-2xl font-bold" id="statTopics">0</div>
+                            <div class="text-xs text-indigo-200">Обговорень</div>
+                        </div>
+                        <div class="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
+                            <div class="text-2xl font-bold" id="statComments">0</div>
+                            <div class="text-xs text-indigo-200">Коментарів</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Потік обговорень (Основна частина) -->
+            <section class="lg:col-span-3 space-y-6">
+                
+                <!-- Верхні фільтри та пошук -->
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row gap-4 justify-between items-center">
+                    
+                    <!-- Рядок пошуку -->
+                    <div class="relative w-full sm:w-80">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Пошук тем за заголовком або контентом..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition">
+                    </div>
+
+                    <!-- Сортування -->
+                    <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                        <span class="text-xs font-medium text-slate-400 uppercase">Сортувати:</span>
+                        <select id="sortBy" onchange="renderTopics()" class="bg-slate-50 border border-slate-200 rounded-xl text-sm px-3 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500">
+                            <option value="newest">Найновіші</option>
+                            <option value="popular">Найпопулярніші (Лайки)</option>
+                            <option value="comments">Найбільше відповідей</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Активний заголовок категорії -->
+                <div class="flex justify-between items-center">
+                    <h1 class="text-xl font-bold text-slate-800" id="currentCategoryTitle">Усі теми</h1>
+                    <span class="text-xs text-slate-500" id="topicsFoundText">Знайдено: 0</span>
+                </div>
+
+                <!-- Контейнер списку тем -->
+                <div id="topics" class="space-y-4">
+                    <!-- Теми рендеряться через JavaScript -->
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm text-slate-500">
+            <p>© 2026 SatisForum. Усі права захищено. Створено для зручного спілкування.</p>
+        </div>
+    </footer>
+
+    <!-- МОДАЛЬНЕ ВІКНО: Створення теми -->
+    <div id="createTopicModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl transform transition-all">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h3 class="text-lg font-bold text-slate-800">Створити нову тему</h3>
+                <button onclick="closeModal('createTopicModal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <form onsubmit="submitNewTopic(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Заголовок теми</label>
+                    <input type="text" id="newTopicTitle" required placeholder="Про що ви хочете розповісти?" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Категорія</label>
+                    <select id="newTopicCategory" required class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none">
+                        <option value="Загальне">Загальне</option>
+                        <option value="Технології">Технології</option>
+                        <option value="Ігри">Ігри</option>
+                        <option value="Запитання та Відповіді">Запитання та Відповіді</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Зміст</label>
+                    <textarea id="newTopicContent" rows="5" required placeholder="Опишіть ваше запитання або тему детальніше..." class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none custom-scrollbar"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 pt-3">
+                    <button type="button" onclick="closeModal('createTopicModal')" class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition">Скасувати</button>
+                    <button type="submit" class="px-5 py-2.5 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-md shadow-brand-500/20 transition">Опублікувати</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНЕ ВІКНО: Авторизація -->
+    <div id="loginModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h3 class="text-lg font-bold text-slate-800">Вхід до SatisForum</h3>
+                <button onclick="closeModal('loginModal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Ваше ім'я / Нікнейм</label>
+                    <input type="text" id="loginName" required placeholder="Олексій" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Пароль</label>
+                    <input type="password" required placeholder="••••••••" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none">
+                </div>
+                <button type="submit" class="w-full py-3 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-md transition">Увійти</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНЕ ВІКНО: Реєстрація -->
+    <div id="registerModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <h3 class="text-lg font-bold text-slate-800">Реєстрація акаунту</h3>
+                <button onclick="closeModal('registerModal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <form onsubmit="handleRegister(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Ваш Нікнейм</label>
+                    <input type="text" id="regName" required placeholder="Марія" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Email</label>
+                    <input type="email" required placeholder="user@example.com" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Пароль</label>
+                    <input type="password" required placeholder="••••••••" class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none">
+                </div>
+                <button type="submit" class="w-full py-3 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-md transition">Зареєструватися</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНІ ВІКНА: Про нас, Послуги, Контакти -->
+    <div id="aboutModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-circle-info text-brand-600 mr-2"></i> Про SatisForum</h3>
+                <button onclick="closeModal('aboutModal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                <strong>SatisForum</strong> — це сучасний майданчик для обговорення найважливіших тем: від новітніх IT-технологій до обговорення відеоігор та вирішення повсякденних питань. 
+            </p>
+            <p class="text-slate-600 text-sm leading-relaxed">
+                Ми прагнемо створити дружнє співтовариство з комфортним середовищем для обміну досвідом та думками.
+            </p>
+        </div>
+    </div>
+
+    <div id="servicesModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-list-check text-brand-600 mr-2"></i> Наші послуги</h3>
+                <button onclick="closeModal('servicesModal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <ul class="space-y-3 text-sm text-slate-600">
+                <li class="flex items-start"><i class="fa-solid fa-check text-emerald-500 mt-1 mr-2"></i> Створення дискусійних майданчиків та тематичних гілок.</li>
+                <li class="flex items-start"><i class="fa-solid fa-check text-emerald-500 mt-1 mr-2"></i> Експертна спільнота для розв'язання складних технічних завдань.</li>
+                <li class="flex items-start"><i class="fa-solid fa-check text-emerald-500 mt-1 mr-2"></i> Система карми та залучення користувачів через лайки/коментарі.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="contactsModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-envelope text-brand-600 mr-2"></i> Контакти</h3>
+                <button onclick="closeModal('contactsModal')" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            <div class="space-y-3 text-sm text-slate-600">
+                <p><i class="fa-solid fa-paper-plane w-6 text-brand-600"></i> Email: support@satisforum.ua</p>
+                <p><i class="fa-solid fa-location-dot w-6 text-brand-600"></i> Адреса: м. Київ, вул. Хрещатик, 1</p>
+                <p><i class="fa-solid fa-phone w-6 text-brand-600"></i> Телефон: +380 (44) 123-45-67</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- ДЕФОЛТНІ ДАНІ ДЛЯ ПЕРШОГО ЗАПУСКУ ---
+        const initialTopics = [
+            {
+                id: '1',
+                title: 'Реліз SatisForum: ласкаво просимо до нашої нової спільноти!',
+                category: 'Загальне',
+                author: 'Адміністратор',
+                authorAvatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=Admin',
+                content: 'Вітаємо всіх користувачів! Це перша офіційна тема на нашому форумі. Тут ви можете спілкуватися, ставити питання та ділитися корисними матеріалами. Не забувайте дотримуватися правил ввічливості!',
+                date: '2026-10-01 10:00',
+                likes: 12,
+                likedBy: [],
+                comments: [
+                    {
+                        id: 'c1',
+                        author: 'Олена_IT',
+                        authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Olena',
+                        text: 'Вітаю з відкриттям! Дуже гарний та сучасний дизайн.',
+                        date: '2026-10-01 10:15'
+                    }
+                ]
+            },
+            {
+                id: '2',
+                title: 'Які мови програмування варто вивчати у 2026 році?',
+                category: 'Технології',
+                author: 'Максим_Dev',
+                authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Max',
+                content: 'Цікавить ваша думка щодо трендів розробки. Чи залишається Python та JavaScript основними мовами, чи варто звернути увагу на Rust та Go?',
+                date: '2026-10-02 14:30',
+                likes: 8,
+                likedBy: [],
+                comments: []
+            },
+            {
+                id: '3',
+                title: 'Топ-5 найкращих ігор для вечірніх посиденьок з друзями',
+                category: 'Ігри',
+                author: 'Gamer_UA',
+                authorAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Gamer',
+                content: 'Поділіться своїми улюбленими кооперативними іграми. Мої фаворити — Overcooked, It Takes Two та Lethal Company!',
+                date: '2026-10-03 18:20',
+                likes: 15,
+                likedBy: [],
+                comments: []
+            }
+        ];
+
+        // --- СТАН ДОДАТКУ ---
+        let topics = [];
+        let currentUser = null;
+        let activeCategory = 'all';
+        let currentTopicId = null;
+
+        // --- ІНІЦІАЛІЗАЦІЯ ПРИ ЗАВАНТАЖЕННІ ---
+        window.onload = function() {
+            // Завантаження тем з LocalStorage або ініціалізація
+            const storedTopics = localStorage.getItem('satis_topics');
+            if (storedTopics) {
+                topics = JSON.parse(storedTopics);
+            } else {
+                topics = initialTopics;
+                saveTopics();
+            }
+
+            // Завантаження користувача
+            const storedUser = localStorage.getItem('satis_user');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+            }
+
+            updateAuthUI();
+            updateCategoryCounts();
+            renderTopics();
+        };
+
+        function saveTopics() {
+            localStorage.setItem('satis_topics', JSON.stringify(topics));
+        }
+
+        function saveUser() {
+            if (currentUser) {
+                localStorage.setItem('satis_user', JSON.stringify(currentUser));
+            } else {
+                localStorage.removeItem('satis_user');
+            }
+        }
+
+        // --- АВТОРИЗАЦІЯ ТА ПРОФІЛЬ ---
+        function updateAuthUI() {
+            const authSection = document.getElementById('authSection');
+            if (currentUser) {
+                authSection.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <img src="${currentUser.avatar}" alt="${currentUser.name}" class="w-9 h-9 rounded-full bg-slate-100 border border-brand-200">
+                        <span class="text-sm font-semibold text-slate-700 hidden sm:inline">${currentUser.name}</span>
+                        <button onclick="handleLogout()" class="text-slate-400 hover:text-red-500 transition ml-2" title="Вийти">
+                            <i class="fa-solid fa-right-from-bracket text-lg"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                authSection.innerHTML = `
+                    <button onclick="openModal('loginModal')" class="text-sm font-medium text-slate-600 hover:text-brand-600 px-3 py-2 transition">Увійти</button>
+                    <button onclick="openModal('registerModal')" class="text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 px-4 py-2 rounded-xl shadow-md shadow-brand-500/20 transition">Реєстрація</button>
+                `;
+            }
+
+            // Оновлення блоку додавання коментарів при зміні стану авторизації
+            if (currentTopicId) {
+                renderAddCommentBox();
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const name = document.getElementById('loginName').value.trim();
+            if (!name) return;
+
+            currentUser = {
+                name: name,
+                avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`
+            };
+            saveUser();
+            updateAuthUI();
+            closeModal('loginModal');
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            if (!name) return;
+
+            currentUser = {
+                name: name,
+                avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`
+            };
+            saveUser();
+            updateAuthUI();
+            closeModal('registerModal');
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            saveUser();
+            updateAuthUI();
+        }
+
+        // --- МОДАЛЬНІ ВІКНА ---
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function handleCreateTopicClick() {
+            if (!currentUser) {
+                openModal('loginModal');
+            } else {
+                openModal('createTopicModal');
+            }
+        }
+
+        // --- СТВОРЕННЯ ТЕМИ ---
+        function submitNewTopic(e) {
+            e.preventDefault();
+            const title = document.getElementById('newTopicTitle').value.trim();
+            const category = document.getElementById('newTopicCategory').value;
+            const content = document.getElementById('newTopicContent').value.trim();
+
+            if (!title || !content) return;
+
+            const now = new Date();
+            const formattedDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            const newTopic = {
+                id: Date.now().toString(),
+                title: title,
+                category: category,
+                author: currentUser.name,
+                authorAvatar: currentUser.avatar,
+                content: content,
+                date: formattedDate,
+                likes: 0,
+                likedBy: [],
+                comments: []
+            };
+
+            topics.unshift(newTopic);
+            saveTopics();
+            updateCategoryCounts();
+            renderTopics();
+
+            // Очищення форми та закриття
+            document.getElementById('newTopicTitle').value = '';
+            document.getElementById('newTopicContent').value = '';
+            closeModal('createTopicModal');
+        }
+
+        // --- КАТЕГОРІЇ ТА ФІЛЬТРАЦІЯ ---
+        function filterByCategory(cat) {
+            activeCategory = cat;
+
+            // Оновлення стилів кнопок категорій
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-brand-600', 'bg-brand-50');
+                btn.classList.add('text-slate-600');
+            });
+
+            event.currentTarget.classList.add('active', 'text-brand-600', 'bg-brand-50');
+            event.currentTarget.classList.remove('text-slate-600');
+
+            document.getElementById('currentCategoryTitle').innerText = cat === 'all' ? 'Усі теми' : cat;
+            renderTopics();
+        }
+
+        function updateCategoryCounts() {
+            document.getElementById('catCountAll').innerText = topics.length;
+            document.getElementById('catCountGeneral').innerText = topics.filter(t => t.category === 'Загальне').length;
+            document.getElementById('catCountTech').innerText = topics.filter(t => t.category === 'Технології').length;
+            document.getElementById('catCountGames').innerText = topics.filter(t => t.category === 'Ігри').length;
+            document.getElementById('catCountQA').innerText = topics.filter(t => t.category === 'Запитання та Відповіді').length;
+
+            // Загальна статистика
+            document.getElementById('statTopics').innerText = topics.length;
+            const totalComments = topics.reduce((acc, t) => acc + (t.comments ? t.comments.length : 0), 0);
+            document.getElementById('statComments').innerText = totalComments;
+        }
+
+        function handleSearch() {
+            renderTopics();
+        }
+
+        // --- РЕНДЕРИНГ СПИСКУ ТЕМ ---
+        function renderTopics() {
+            const container = document.getElementById('topics');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const sortBy = document.getElementById('sortBy').value;
+
+            // Фільтрація
+            let filtered = topics.filter(t => {
+                const matchesCat = activeCategory === 'all' || t.category === activeCategory;
+                const matchesSearch = t.title.toLowerCase().includes(searchVal) || t.content.toLowerCase().includes(searchVal);
+                return matchesCat && matchesSearch;
+            });
+
+            // Сортування
+            if (sortBy === 'newest') {
+                filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+            } else if (sortBy === 'popular') {
+                filtered.sort((a, b) => b.likes - a.likes);
+            } else if (sortBy === 'comments') {
+                filtered.sort((a, b) => (b.comments ? b.comments.length : 0) - (a.comments ? a.comments.length : 0));
+            }
+
+            document.getElementById('topicsFoundText').innerText = `Знайдено: ${filtered.length}`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-2xl p-8 text-center border border-slate-200">
+                        <i class="fa-regular fa-folder-open text-4xl text-slate-300 mb-3"></i>
+                        <p class="text-slate-500 font-medium">Тем не знайдено</p>
+                        <p class="text-xs text-slate-400 mt-1">Спробуйте змінити пошуковий запит або створити нову тему!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(topic => {
+                const isLiked = currentUser && topic.likedBy && topic.likedBy.includes(currentUser.name);
+                return `
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 card-hover transition cursor-pointer" onclick="openTopicDetail('${topic.id}')">
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <img src="${topic.authorAvatar}" alt="${topic.author}" class="w-10 h-10 rounded-full bg-slate-100">
+                                <div>
+                                    <span class="text-sm font-semibold text-slate-800">${topic.author}</span>
+                                    <div class="text-xs text-slate-400 flex items-center space-x-2">
+                                        <span>${topic.date}</span>
+                                        <span>•</span>
+                                        <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-medium">${topic.category}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 class="text-lg font-bold text-slate-800 hover:text-brand-600 transition mb-2">${topic.title}</h2>
+                        <p class="text-slate-600 text-sm line-clamp-2 mb-4 leading-relaxed">${topic.content}</p>
+
+                        <div class="flex items-center justify-between border-t pt-3 text-xs text-slate-500">
+                            <div class="flex items-center space-x-4">
+                                <button onclick="toggleLike(event, '${topic.id}')" class="flex items-center space-x-1.5 ${isLiked ? 'text-rose-500 font-bold' : 'hover:text-rose-500'} transition">
+                                    <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart text-sm"></i>
+                                    <span>${topic.likes}</span>
+                                </button>
+                                <span class="flex items-center space-x-1.5 hover:text-brand-600 transition">
+                                    <i class="fa-regular fa-comment text-sm"></i>
+                                    <span>${topic.comments ? topic.comments.length : 0} відповідей</span>
+                                </span>
+                            </div>
+                            <span class="text-brand-600 font-medium flex items-center">Читати повністю <i class="fa-solid fa-chevron-right ml-1 text-[10px]"></i></span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --- ДЕТАЛЬНИЙ ПЕРЕГЛЯД ТЕМИ ---
+        function openTopicDetail(topicId) {
+            currentTopicId = topicId;
+            const topic = topics.find(t => t.id === topicId);
+            if (!topic) return;
+
+            document.getElementById('mainForumView').classList.add('hidden');
+            document.getElementById('topicDetailView').classList.remove('hidden');
+
+            const isLiked = currentUser && topic.likedBy && topic.likedBy.includes(currentUser.name);
+
+            document.getElementById('topicDetailContainer').innerHTML = `
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <img src="${topic.authorAvatar}" alt="${topic.author}" class="w-12 h-12 rounded-full bg-slate-100">
+                        <div>
+                            <div class="text-base font-bold text-slate-800">${topic.author}</div>
+                            <div class="text-xs text-slate-400 flex items-center space-x-2">
+                                <span>Опубліковано: ${topic.date}</span>
+                                <span>•</span>
+                                <span class="bg-brand-50 text-brand-600 px-2.5 py-0.5 rounded-full font-semibold">${topic.category}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h1 class="text-2xl font-bold text-slate-900 mb-4">${topic.title}</h1>
+                    <div class="text-slate-700 leading-relaxed whitespace-pre-line border-b pb-6 mb-4 text-base">${topic.content}</div>
+
+                    <div class="flex items-center space-x-4 text-sm">
+                        <button onclick="toggleLike(event, '${topic.id}')" class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-50 hover:bg-rose-50 ${isLiked ? 'text-rose-500 bg-rose-50 font-semibold' : 'text-slate-600'} transition">
+                            <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart text-base"></i>
+                            <span>${topic.likes} Лайків</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            renderComments();
+            renderAddCommentBox();
+        }
+
+        function showTopicsView() {
+            currentTopicId = null;
+            document.getElementById('topicDetailView').classList.add('hidden');
+            document.getElementById('mainForumView').classList.remove('hidden');
+            renderTopics();
+        }
+
+        // --- ЛАЙКИ ---
+        function toggleLike(e, topicId) {
+            e.stopPropagation();
+            if (!currentUser) {
+                openModal('loginModal');
+                return;
+            }
+
+            const topic = topics.find(t => t.id === topicId);
+            if (!topic) return;
+
+            if (!topic.likedBy) topic.likedBy = [];
+
+            const userIndex = topic.likedBy.indexOf(currentUser.name);
+            if (userIndex === -1) {
+                topic.likedBy.push(currentUser.name);
+                topic.likes += 1;
+            } else {
+                topic.likedBy.splice(userIndex, 1);
+                topic.likes -= 1;
+            }
+
+            saveTopics();
+
+            if (currentTopicId === topicId) {
+                openTopicDetail(topicId);
+            } else {
+                renderTopics();
+            }
+        }
+
+        // --- КОМЕНТАРІ ---
+        function renderComments() {
+            const topic = topics.find(t => t.id === currentTopicId);
+            if (!topic) return;
+
+            const commentsList = document.getElementById('commentsList');
+            const commentsCount = document.getElementById('commentsCount');
+
+            commentsCount.innerText = topic.comments ? topic.comments.length : 0;
+
+            if (!topic.comments || topic.comments.length === 0) {
+                commentsList.innerHTML = `
+                    <p class="text-slate-400 text-sm text-center py-4">Будьте першим, хто залишить коментар до цієї теми!</p>
+                `;
+                return;
+            }
+
+            commentsList.innerHTML = topic.comments.map(c => `
+                <div class="flex space-x-3 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                    <img src="${c.authorAvatar}" alt="${c.author}" class="w-9 h-9 rounded-full bg-slate-200 flex-shrink-0">
+                    <div class="flex-grow">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-bold text-slate-800">${c.author}</span>
+                            <span class="text-[10px] text-slate-400">${c.date}</span>
+                        </div>
+                        <p class="text-slate-600 text-sm leading-relaxed">${c.text}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAddCommentBox() {
+            const container = document.getElementById('addCommentBox');
+            if (currentUser) {
+                container.innerHTML = `
+                    <form onsubmit="submitComment(event)" class="space-y-3">
+                        <textarea id="commentText" rows="3" required placeholder="Напишіть вашу відповідь..." class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none custom-scrollbar"></textarea>
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-5 py-2 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl shadow-md transition">Відповісти</button>
+                        </div>
+                    </form>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="p-4 rounded-xl bg-slate-50 border border-dashed border-slate-300 text-center text-sm text-slate-500">
+                        Щоб залишити коментар, будь ласка, <button onclick="openModal('loginModal')" class="text-brand-600 font-semibold underline">увійдіть</button> або <button onclick="openModal('registerModal')" class="text-brand-600 font-semibold underline">зареєструйтеся</button>.
+                    </div>
+                `;
+            }
+        }
+
+        function submitComment(e) {
+            e.preventDefault();
+            const text = document.getElementById('commentText').value.trim();
+            if (!text || !currentTopicId) return;
+
+            const topic = topics.find(t => t.id === currentTopicId);
+            if (!topic) return;
+
+            if (!topic.comments) topic.comments = [];
+
+            const now = new Date();
+            const formattedDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            topic.comments.push({
+                id: Date.now().toString(),
+                author: currentUser.name,
+                authorAvatar: currentUser.avatar,
+                text: text,
+                date: formattedDate
+            });
+
+            saveTopics();
+            updateCategoryCounts();
+            renderComments();
+            document.getElementById('commentText').value = '';
+        }
+    </script>
+</body>
+</html>

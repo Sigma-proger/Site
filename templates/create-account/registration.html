@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('registration_css') }}">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SatisForum</title>
+</head>
+<body>
+	<a id="main-login-button" class="btn-top" href="{{ url_for('login') }}">Log In</a>
+
+	<!-- Центральний затененный модуль -->
+	<div class="ficsit-card">
+		<div class="ficsit-header">
+			<span class="ficsit-tag">FICSIT INC. AUTHORIZATION</span>
+			<h1 id="formTitle">SIGN UP TO SATISFORUM</h1>
+		</div>
+	
+
+		<!-- Форма Реєстрації -->
+		<div id="registerForm" class="form-container">
+			<form action="/registration" method="post">
+				<div class="input-group">
+					<label for="UserName">Username</label>
+					<input type="text" id="UserName" name="UserName" placeholder="Pioneer_#1042" required>
+				</div>
+
+				<div class="input-group">
+					<label for="Password">Password</label>
+					<input type="password" id="Password" name="Password" placeholder="••••••••" required>
+				</div>
+
+				<button type="submit" class="submit-btn">SIGN UP</button>
+			</form>
+		</div>
+	</div>
+
+</body>
+</html>
