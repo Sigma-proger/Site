@@ -17,3 +17,48 @@ body {
 	z-index: 1000;
 	transition: all 0.3s ease;
 }
+
+.site-header .container {
+	max-width: 1200px;
+	height: 100%;
+	margin: 0 auto;
+	padding: 0 20px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between; /* Логотип зліва, меню справа */
+}
+
+.logo {
+	display: flex;
+	align-items: center;
+}
+
+.logo a {
+	display: flex;
+	align-items: center;
+}
+
+#navigation {
+	display: flex;
+	justify-content: center;
+	gap: 20px;
+}
+
+#auth-buttons {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+#navigation a, #auth-buttons a {
+	text-decoration: none; /* Видаляємо синє підкреслення */
+	color: #4b5563;
+	font-weight: 500;
+	font-size: 15px;
+	transition: color 0.2s ease;
+}
+
+#navigation a:hover, #auth-buttons a:hover {
+	color: #FA9549; /* Колір при наведенні */
+}
+
