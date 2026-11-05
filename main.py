@@ -8,6 +8,10 @@ app = Flask(__name__)
 def index():
 	return render_template('index.html')
 
+@app.route('/style.css')
+def index_css():
+	return send_from_directory('templates', 'style.css')
+
 #registration methods
 @app.route('/registration', methods=['GET', 'POST'])
 def registration():
@@ -23,11 +27,11 @@ def registration():
 
 @app.route('/registration/style.css')
 def registration_css():
-    return send_from_directory('templates/create-account', 'style.css')
+	return send_from_directory('templates/create-account', 'style.css')
 
 @app.route('/registration/assets/<path:filename>')
 def registration_assets(filename):
-    return send_from_directory('templates/create-account/assets', filename)
+	return send_from_directory('templates/create-account/assets', filename)
 
 #login methods
 @app.route('/login', methods=['GET', 'POST'])
@@ -46,11 +50,11 @@ def login():
 
 @app.route('/login/style.css')
 def login_css():
-    return send_from_directory('templates/create-account', 'style.css')
+	return send_from_directory('templates/create-account', 'style.css')
 
 @app.route('/login/assets/<path:filename>')
 def login_assets(filename):
-    return send_from_directory('templates/create-account/assets', filename)
+	return send_from_directory('templates/create-account/assets', filename)
 
 
 if __name__ == '__main__':
