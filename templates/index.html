@@ -1,67 +1,69 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, send_from_directory
-#import json
-import db_cmd
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SatisForum</title>
+</head>
 
-app = Flask(__name__)
+<body>
+	<header class="site-header">
+		<div class="container">
+			<div class="logo">
+				<a href="#" onclick="showTopicsView()">
+					<canvas id="logoCanvas" width="140" height="32"></canvas>
 
-@app.route('/')
-def index():
-	test_topics = [
-        (1, 'Споруди'),
-        (2, 'Логістика'),
-        (3, 'Енергетика'),
-        (4, 'Креслення')
-    ]
-	return render_template('index.html', topics=test_topics, user=["Fureym"])
+					<script>
+						const canvas = document.getElementById('logoCanvas');
+						const ctx = canvas.getContext('2d');
 
-@app.route('/style.css')
-def index_css():
-	return send_from_directory('templates', 'style.css')
+						// Використовуємо 24px за вимогами
+						ctx.font = 'bold 24px Inter, sans-serif';
+						ctx.textBaseline = 'middle';
 
-#registration methods
-@app.route('/registration', methods=['GET', 'POST'])
-def registration():
-	if request.method == 'POST':
-		reg_name = request.form.get('UserName')
-		reg_pas = request.form.get('Password')
+						const firstPart = "Satis";
+						const secondPart = "Forum";
 
-		# Передаємо дані у вашу функцію БД
-		db_cmd.add_user(reg_name, reg_pas)
-		print(reg_name, reg_pas)
+						// Відступ зліва (margin 8px)
+						const startX = 8;
+						const centerY = canvas.height / 2; // Точно по центру Canvas (16px)
 
-	return render_template('create-account/registration.html', message=None)
+						// Малюємо "Satis" (колір #4F46E5)
+						ctx.fillStyle = '#FA9549';
+						ctx.fillText(firstPart, startX, centerY);
 
-@app.route('/registration/style.css')
-def registration_css():
-	return send_from_directory('templates/create-account', 'style.css')
+						// Дрібний розрахунок ширини першої частини
+						const firstPartWidth = ctx.measureText(firstPart).width;
 
-@app.route('/registration/assets/<path:filename>')
-def registration_assets(filename):
-	return send_from_directory('templates/create-account/assets', filename)
+						// Малюємо "Forum" одразу після "Satis"
+						ctx.fillStyle = '#1B2234';
+						ctx.fillText(secondPart, startX + firstPartWidth, centerY);
+					</script>
+				</a>
+			</div>
 
-#login methods
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-	if request.method == 'POST':
-		log_name = request.form.get('UserName')
-		log_pas = request.form.get('Password')
-		print(db_cmd.user_exists(log_name, log_pas) == True)
-		if db_cmd.user_exists(log_name, log_pas) == True:
-			return render_template('index.html', name=log_name)
-		else:
-			return render_template('create-account/login.html')
-		
-	else:
-		return render_template('create-account/login.html')
+			<nav id="navigation">
+				<a href="https://satisfactory.wiki.gg/">Wiki</a>
+				<a href="#about">Про нас</a>
+				<a href="#contacts">Контакти</a>
+			</nav>
 
-@app.route('/login/style.css')
-def login_css():
-	return send_from_directory('templates/create-account', 'style.css')
+			<!-- Кнопки входу/реєстрації праворуч -->
+			<div id="auth-buttons">
+				<a href="/login">Увійти</a>
+				<a href="/registration">Реєстрація</a>
+			</div>
+		</div>
+	</header>
 
-@app.route('/login/assets/<path:filename>')
-def login_assets(filename):
-	return send_from_directory('templates/create-account/assets', filename)
-
-
-if __name__ == '__main__':
-	app.run(debug=True)
+	<div id="topics">
+		{% for topic in topics %}
+			<section class="topic">
+				<!-- topic[0] — це id теми, topic[1] — її назва -->
+				<a href="/topic/{{ topic[0] }}">{{ topic[1] }}</a>
+			</section>
+		{% endfor %}
+	</div>
+</body>
+</html>
