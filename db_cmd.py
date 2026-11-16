@@ -68,12 +68,32 @@ def user_exists(_name, _pass):
 			return False
 	except Exception as e:
 		#пишемо що робити якщо виникає помилка у try
-		print('check_user: ', e)
+		print('user_exists: ', e)
 	finally:#те що робити при завершені роботи незалежно була помилка чи ні
 		#закриваємо підключення до БД
 		if conn is not None: #чи зміна conn не = None
 			conn.close()
 
+def get_topic():
+	db_file = 'db.db'
+	conn = None
+	try:
+		conn = sqlite3.connect(db_file)
+		cur = conn.cursor()
+		sql = f"""SELECT * FROM Topics"""
+		cur.execute(sql)
+		data = cur.fetchall() #fetchone() = один рядок, видає 1 рядок
+		cur.close() #закриває мотод курсора
+		return data
+	except Exception as e:
+		print('get_topic: ', e)
+	finally:
+		if conn is not None: #чи зміна conn не = None
+			conn.close()
+
+
+
+#____
 def ovner_user(_pass, _name):
 	db_file = 'db.db'
 	conn = None
