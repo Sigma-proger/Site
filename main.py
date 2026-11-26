@@ -12,7 +12,7 @@ def index():
 		(3, 'Енергетика'),
 		(4, 'Креслення')
 	]
-	return render_template('index.html', topics=test_topics, user=["Fureym"])
+	return render_template('index.html', topics=test_topics, stats=[])
 
 @app.route('/style.css')
 def index_css():

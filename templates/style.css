@@ -124,3 +124,61 @@ body {
 	color: #FA9549;
 	transform: translateX(4px);
 }
+
+.hero {
+	background-size: cover;
+	background-position: center 40%;
+	color: #FFFFFF;
+	border-bottom: 4px solid #FA9549;
+}
+
+.hero-inner {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 64px 20px 0;
+}
+
+.hero h1 {
+	font-family: 'Teko', sans-serif;
+	font-weight: 600;
+	font-size: 60px;
+	line-height: 1;
+	letter-spacing: 1px;
+	margin: 0 0 14px;
+}
+
+.hero p {
+	max-width: 520px;
+	margin: 0 0 26px;
+	font-size: 17px;
+	line-height: 1.55;
+	color: #CBD5E1;
+}
+
+.hero-actions { display: flex; gap: 12px; margin-bottom: 44px; }
+.hero-actions .btn { text-decoration: none; display: inline-block; }
+
+.btn-ghost {
+	background: transparent;
+	color: #FFFFFF;
+	border: 1px solid #64748B;
+	padding: 5px 22px;
+}
+.btn-ghost:hover { background: rgba(255, 255, 255, 0.1); border-color: #FA9549; }
+
+.hero-stats {
+	display: flex;
+	gap: 44px;
+	padding: 18px 0 20px;
+	border-top: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.hero-stats strong {
+	display: block;
+	font-family: 'Teko', sans-serif;
+	font-size: 36px;
+	line-height: 1;
+	color: #FA9549;
+}
+
+.hero-stats span { font-size: 13px; color: #94A3B8; }

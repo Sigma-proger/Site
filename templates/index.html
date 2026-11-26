@@ -57,6 +57,28 @@
 		</div>
 	</header>
 
+	{% block hero %}
+		<section class="hero" style="background-image: linear-gradient(90deg, rgba(10,14,20,.94) 0%, rgba(10,14,20,.72) 55%, rgba(10,14,20,.4) 100%), url('registration/assets/background.jpg');">
+			<div class="hero-inner">
+				<h1>Будуємо Satisfactory разом</h1>
+				<p>Діліться кресленнями, розбирайте логістику та енергосистеми й питайте поради в інших піонерів.</p>
+
+				<div class="hero-actions">
+					<a class="btn" href="#sections">Обрати розділ</a>
+					{% if not user %}
+						<a class="btn btn-ghost" href="{{ url_for('registration') }}">Приєднатися</a>
+					{% endif %}
+				</div>
+
+				<div class="hero-stats">
+					<div><strong>{{ stats.threads }}</strong><span>тем</span></div>
+					<div><strong>{{ stats.posts }}</strong><span>повідомлень</span></div>
+					<div><strong>{{ stats.members }}</strong><span>піонерів</span></div>
+				</div>
+			</div>
+		</section>
+	{% endblock %}
+
 	<div id="topics">
 		{% for topic in topics %}
 			<section class="topic">
